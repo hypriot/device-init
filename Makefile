@@ -23,3 +23,7 @@ clean_deb:
 
 deb_arm: build clean_deb
 	docker run -ti --rm -v $(shell pwd):/workspace -v $(shell pwd)/scripts/build_deb.sh:/build_deb.sh device-init /build_deb.sh
+
+tag:
+	git tag $(shell cat VERSION)
+	git push origin ${TAG}
