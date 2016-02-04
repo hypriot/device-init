@@ -24,6 +24,8 @@ sed -i'' "s/<DEPENDS>//g" ${BUILD_DIR}/package/${PACKAGE_NAME}/DEBIAN/control
 
 # copy binary that will be packaged to destination folder
 cp /workspace/device-init_linux_arm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin
+# prevent .gitignore from ending up in the package
+rm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin/.gitignore
 
 # create package with dpkg-deb
 cd ${BUILD_DIR}/package && dpkg-deb --build ${PACKAGE_NAME}
