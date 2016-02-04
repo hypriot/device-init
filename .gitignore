@@ -1,2 +1,3 @@
 device-init_linux_amd64
 device-init_linux_arm
+*.deb
