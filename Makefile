@@ -26,4 +26,4 @@ deb_arm: build clean_deb
 
 tag:
 	git tag $(shell cat VERSION)
-	git push origin ${TAG}
+	git push origin $(shell cat VERSION)
