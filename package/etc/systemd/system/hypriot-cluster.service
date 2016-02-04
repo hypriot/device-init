@@ -1,0 +1,8 @@
+[Unit]
+Description=device-init
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/device-init
+Type=oneshot

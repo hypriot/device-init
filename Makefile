@@ -18,3 +18,8 @@ test-shell: build
 shell: build
 	docker run -ti --rm -v $(shell pwd):/opt/gopath/src/github.com/hypriot/device-init -v $(shell pwd)/scripts/build.sh:/build.sh device-init /bin/bash
 
+clean_deb:
+	rm -f *.deb
+
+deb_arm: build clean_deb
+	docker run -ti --rm -v $(shell pwd):/workspace -v $(shell pwd)/scripts/build_deb.sh:/build_deb.sh device-init /build_deb.sh

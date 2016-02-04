@@ -1,0 +1,11 @@
+Package: <NAME>
+Version: <VERSION>
+Section: admin
+Priority: optional
+Architecture: armhf
+Essential: no
+Installed-Size: <SIZE>
+Maintainer: blog.hypriot.com
+Description: <DESCRIPTION>
+Depends: <DEPENDS>
+
