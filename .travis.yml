@@ -9,6 +9,7 @@ deploy:
   provider: releases
   api_key:
     secure: ugzIrfc6eZ7Qk5EAqLh4aJFhj0cMG6dRvDwuKcZ5bbfkbQkfdarlIpIFouwasRM/VWZQu9IJiIj9aQ7rygcj9YGSrajgy56xE5J6bXiSAo6nEyjfYqkj7U9E8RRJ81c81zhr+mrUmfHaa1PqT652R2YiBPcnEzaUl+uH0QxdReHwnivQ6LSBuM/KuHAzNIqnHlAY0DEOlg5BipuFZx+n2t1aNRhagmOJ7Z59tnkdHAqRCNho7N6PttGAskZlPlOQK3X1r3EOimuMOnJbiakje7fi1xjvi9SCQ3uTWVB15y/VcJ3yGkB0N43PkMeLv1JpKEh54QPfO8tbn1EYooMmZgtwm2dZLRSCXuygNJYWRC/zTWdvWOZn84zOJUIiE355DVDJfqRbUQvvNY3fJNOt0QDtIllvUnDwnXVWmPoYfkfM8HZbuPYLo32FGsZVex7FDa7N540BJEi51x52zNoDu9fRGPv5vWi4hERuPE26HPGkT3I9SJAMwFiwrkYcsjA6X0JGIY6K/06H2ZDZ4y+i5SdpGuLHHZ/tOOwacDdCiagPZAr//S5JRS9LpFtu9HpWPU3kmD2AVyTUtXFEdAt8F+hcQ/0PrOHEVjch/+OY21f3thwCn9g/LqWHOUgLvJL+XHrr6pWEa7vwvcpxWgPGNgCC+6ngHLTTGojMZTBZPh8=
+  file_glob: true
   file:
     - device-init-*-armhf.deb
     - device-init_linux_arm
