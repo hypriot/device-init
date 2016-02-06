@@ -6,3 +6,6 @@ After=network.target network-online.target
 [Service]
 ExecStart=/usr/local/bin/device-init
 Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

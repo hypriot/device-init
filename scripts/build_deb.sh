@@ -23,7 +23,7 @@ sed -i'' "s/<DESCRIPTION>/${DESCRIPTION}/g" ${BUILD_DIR}/package/${PACKAGE_NAME}
 sed -i'' "s/<DEPENDS>//g" ${BUILD_DIR}/package/${PACKAGE_NAME}/DEBIAN/control
 
 # copy binary that will be packaged to destination folder
-cp /workspace/device-init_linux_arm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin
+cp /workspace/device-init_linux_arm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin/device-init
 # prevent .gitignore from ending up in the package
 rm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin/.gitignore
 
