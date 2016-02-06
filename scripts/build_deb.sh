@@ -27,11 +27,10 @@ cp /workspace/device-init_linux_arm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/loc
 # prevent .gitignore from ending up in the package
 rm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin/.gitignore
 
-# ensure that the travis-ci user can access the sd-card image file
-umask 0000
-
 # create package with dpkg-deb
 cd ${BUILD_DIR}/package && dpkg-deb --build ${PACKAGE_NAME}
 
 cp ${BUILD_DIR}/package/${PACKAGE_NAME}.deb /workspace/${PACKAGE_NAME}-${PACKAGE_VERSION}-armhf.deb
-chmod 777 /workspace/${PACKAGE_NAME}-${PACKAGE_VERSION}-armhf.deb
+
+# ensure that the travis-ci user can access the deb package
+chmod a+rw /workspace/${PACKAGE_NAME}-${PACKAGE_VERSION}-armhf.deb

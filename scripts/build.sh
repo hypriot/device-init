@@ -7,4 +7,5 @@ WORKDIR="/opt/gopath/src/github.com/hypriot/device-init"
 cd $WORKDIR
 GOPATH="`godep path`:$GOPATH" gox -osarch="${OSARCH}"
 
-chmod 777 device-init_linux*
+# ensure that the travis-ci user can access the binaries
+chmod a+rw device-init_linux*
