@@ -27,6 +27,9 @@ cp /workspace/device-init_linux_arm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/loc
 # prevent .gitignore from ending up in the package
 rm ${BUILD_DIR}/package/${PACKAGE_NAME}/usr/local/bin/.gitignore
 
+# ensure that the travis-ci user can access the sd-card image file
+umask 0000
+
 # create package with dpkg-deb
 cd ${BUILD_DIR}/package && dpkg-deb --build ${PACKAGE_NAME}
 
