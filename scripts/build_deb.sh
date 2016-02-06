@@ -34,3 +34,4 @@ umask 0000
 cd ${BUILD_DIR}/package && dpkg-deb --build ${PACKAGE_NAME}
 
 cp ${BUILD_DIR}/package/${PACKAGE_NAME}.deb /workspace/${PACKAGE_NAME}-${PACKAGE_VERSION}-armhf.deb
+chmod 777 /workspace/${PACKAGE_NAME}-${PACKAGE_VERSION}-armhf.deb
