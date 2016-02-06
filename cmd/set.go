@@ -87,7 +87,6 @@ func set_hostname(args ...string) {
 		panic(err)
 	}
 
-	fmt.Printf("hostname: %s\n", hostname)
 	set_hostname_cmd := exec.Command("hostname", hostname)
 	err = set_hostname_cmd.Run()
 	if err != nil {
