@@ -6,16 +6,23 @@ script:
   - make compile_and_test
   - make deb_arm
 deploy:
-  before_deploy:
-    - "ls -lah"
-  provider: releases
-  api_key:
-    secure: ugzIrfc6eZ7Qk5EAqLh4aJFhj0cMG6dRvDwuKcZ5bbfkbQkfdarlIpIFouwasRM/VWZQu9IJiIj9aQ7rygcj9YGSrajgy56xE5J6bXiSAo6nEyjfYqkj7U9E8RRJ81c81zhr+mrUmfHaa1PqT652R2YiBPcnEzaUl+uH0QxdReHwnivQ6LSBuM/KuHAzNIqnHlAY0DEOlg5BipuFZx+n2t1aNRhagmOJ7Z59tnkdHAqRCNho7N6PttGAskZlPlOQK3X1r3EOimuMOnJbiakje7fi1xjvi9SCQ3uTWVB15y/VcJ3yGkB0N43PkMeLv1JpKEh54QPfO8tbn1EYooMmZgtwm2dZLRSCXuygNJYWRC/zTWdvWOZn84zOJUIiE355DVDJfqRbUQvvNY3fJNOt0QDtIllvUnDwnXVWmPoYfkfM8HZbuPYLo32FGsZVex7FDa7N540BJEi51x52zNoDu9fRGPv5vWi4hERuPE26HPGkT3I9SJAMwFiwrkYcsjA6X0JGIY6K/06H2ZDZ4y+i5SdpGuLHHZ/tOOwacDdCiagPZAr//S5JRS9LpFtu9HpWPU3kmD2AVyTUtXFEdAt8F+hcQ/0PrOHEVjch/+OY21f3thwCn9g/LqWHOUgLvJL+XHrr6pWEa7vwvcpxWgPGNgCC+6ngHLTTGojMZTBZPh8=
-  file_glob: true
-  file:
-    - device-init-*-armhf.deb
-    - device-init_linux_arm
-    - device-init_linux_amd64
-  on:
-    tags: true
-    repo: hypriot/device-init
+  - provider: releases
+    api_key:
+      secure: ugzIrfc6eZ7Qk5EAqLh4aJFhj0cMG6dRvDwuKcZ5bbfkbQkfdarlIpIFouwasRM/VWZQu9IJiIj9aQ7rygcj9YGSrajgy56xE5J6bXiSAo6nEyjfYqkj7U9E8RRJ81c81zhr+mrUmfHaa1PqT652R2YiBPcnEzaUl+uH0QxdReHwnivQ6LSBuM/KuHAzNIqnHlAY0DEOlg5BipuFZx+n2t1aNRhagmOJ7Z59tnkdHAqRCNho7N6PttGAskZlPlOQK3X1r3EOimuMOnJbiakje7fi1xjvi9SCQ3uTWVB15y/VcJ3yGkB0N43PkMeLv1JpKEh54QPfO8tbn1EYooMmZgtwm2dZLRSCXuygNJYWRC/zTWdvWOZn84zOJUIiE355DVDJfqRbUQvvNY3fJNOt0QDtIllvUnDwnXVWmPoYfkfM8HZbuPYLo32FGsZVex7FDa7N540BJEi51x52zNoDu9fRGPv5vWi4hERuPE26HPGkT3I9SJAMwFiwrkYcsjA6X0JGIY6K/06H2ZDZ4y+i5SdpGuLHHZ/tOOwacDdCiagPZAr//S5JRS9LpFtu9HpWPU3kmD2AVyTUtXFEdAt8F+hcQ/0PrOHEVjch/+OY21f3thwCn9g/LqWHOUgLvJL+XHrr6pWEa7vwvcpxWgPGNgCC+6ngHLTTGojMZTBZPh8=
+    file_glob: true
+    skip_cleanup: true
+    file:
+      - device-init-*-armhf.deb
+      - device-init_linux_arm
+      - device-init_linux_amd64
+    on:
+      tags: true
+      repo: hypriot/device-init
+  - provider: packagecloud
+    repository: "Hypriot/Schatzkiste"
+    username: "info@hypriot.com"
+    token:
+      secure: "jrAcpyT30EvFhvcePM/D2ty3hUQFHPJa7A5zmMUMh9klXPCJn4bj58b1oxl08iC3/oTokLOOAh2Php0w/FujlXgVEg4oDX9JE0pfV+YIwwILB8aHuB1C8sYSdkWXHk0nYfM2bJNHSVt96e3ONHWmpyVXovKa5eDF/gc+sihtOx6mBqwdwVVrBH9nMWlUTlAnyKSEgSU3gf1U1iS6IkAhVCFjmBckMKj/Td0ayK2+Qh/0gToTjpoBE7H+o46Ix8pO2VxVt9hvBRkIjsFWfJWaGL+mj9ww7kR+B7BYbxPSoWD09olMGqMJQ+lPVwND/mU7S6XEfSglBLgvriRQ6Ysg1wOc19aQVGPN1Q4I4Bv7qcSRDubVXaRVxeCaDozYkdyWYUv3VHxbuSFOtlwUj4t6sCwqjKYvCsNP3hLZEemrM38tn+goMDl5a0UNJANMWFyaeni7LT3CTaWJNPLfk0fn6yoTUngsTJSk01MWvw/eDRWcJPHHoMkibDoJ13EOHISgUIBV2HfCuuvZTa/d6c/TSKw5oKxGxgyi4U5kaEaX3NX2a/6cLS3Ishxm9f+g+4cFfZlQh1wCm+S1FhWfBe+Q0qVwtJZJg5mSgF6sTcyKlem5Ib3qdho7t+9fZ4Qhy7ZUPIweL/y3HIiOldwH2CW9hSm69S/aWEmRAjcF1m/juKA="
+    dist: "debian/wheezy"
+    on:
+      tags: true
