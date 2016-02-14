@@ -7,14 +7,14 @@ The `device-init` runs while booting your device and can customize some settings
 
 To replace the `/boot/occidentalis.txt` (as we want this feature for more boards than the RPi) and to enhance the possibilities to customize the SD card image at first boot, we want to introduce this tool `device-init` that read customizations from the FAT partition `/boot/device-init.yaml` so it is easier to write it onto the SD card image.
 
-* Set hostname ☑
-* Set WiFi SSID/PSK
-* Set timezone
-* Set locale
-* Set static IP (see hypriot/flash#25)
-* Pull some docker images
-* Install a list of DEB packages
-* Run a custom script from /boot
+* ☑ Set hostname
+* ☐ Set WiFi SSID/PSK
+* ☐ Set timezone
+* ☐ Set locale
+* ☐ Set static IP (see hypriot/flash#25)
+* ☐ Pull some docker images
+* ☐ Install a list of DEB packages
+* ☐ Run a custom script from /boot
 * ...
 
 ## The /boot/device-init.yaml
