@@ -15,7 +15,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl/hcl/printer"
+	"github.com/hashicorp/hcl/hcl/printer"
 )
 
 var (

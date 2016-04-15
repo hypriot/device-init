@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl/hcl/parser"
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl/hcl/token"
+	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/hashicorp/hcl/hcl/parser"
+	"github.com/hashicorp/hcl/hcl/token"
 )
 
 // This is the tag to use with structures to have settings for HCL

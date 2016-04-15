@@ -13,7 +13,7 @@
 
 package doc
 
-import "github.com/hypriot/device-init/Godeps/_workspace/src/github.com/spf13/cobra"
+import "github.com/spf13/cobra"
 
 // Test to see if we have a reason to print See Also information in docs
 // Basically this is a test for a parent commend or a subcommand which is

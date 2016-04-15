@@ -39,7 +39,7 @@ var RootCmd = &cobra.Command{
 This ranges from configuration as simple as setting a hostname to
 more complex stuff as configuring WiFi access.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if config.ConfigFileUsed() != "" {
+		if cfgFile != "" {
 			set_all_commands()
 		} else {
 			cmd.Help()
@@ -57,25 +57,27 @@ func Execute() {
 }
 
 func set_all_commands() {
-	set_hostname()
+	// If a config file is found, do stuff for all settings that are present
+	if err := config.ReadInConfig(); err == nil {
+		set_hostname()
+	}
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	RootCmd.Flags().StringVar(&cfgFile, "config", "", "config file (default is /boot/device-init.yaml)")
+	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is /boot/device-init.yaml)")
+	RootCmd.PersistentFlags().Lookup("config").NoOptDefVal = "/boot/device-init.yaml"
 }
 
 // initConfig reads in config file
 func initConfig() {
 	if cfgFile != "" { // enable ability to specify config file via flag
 		config.SetConfigFile(cfgFile)
+
+		// If a config file is found, read it in.
+		if err := config.ReadInConfig(); err == nil {
+			fmt.Println("Using config file:", config.ConfigFileUsed())
+		}
 	}
 
-	config.SetConfigName("device-init") // name of config file (without extension)
-	config.AddConfigPath("/boot")       // adding home directory as first search path
-
-	// If a config file is found, read it in.
-	if err := config.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", config.ConfigFileUsed())
-	}
 }
