@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/spf13/pflag"
+	"github.com/spf13/pflag"
 )
 
 const (

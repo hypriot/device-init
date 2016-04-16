@@ -21,12 +21,12 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/BurntSushi/toml"
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl"
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/magiconair/properties"
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/spf13/cast"
-	jww "github.com/hypriot/device-init/Godeps/_workspace/src/github.com/spf13/jwalterweatherman"
-	"github.com/hypriot/device-init/Godeps/_workspace/src/gopkg.in/yaml.v2"
+	"github.com/BurntSushi/toml"
+	"github.com/hashicorp/hcl"
+	"github.com/magiconair/properties"
+	"github.com/spf13/cast"
+	jww "github.com/spf13/jwalterweatherman"
+	"gopkg.in/yaml.v2"
 )
 
 // Denotes failing to parse configuration file.

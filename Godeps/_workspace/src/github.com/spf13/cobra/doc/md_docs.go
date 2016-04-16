@@ -22,7 +22,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 func printOptions(w io.Writer, cmd *cobra.Command, name string) error {

@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	flag "github.com/hypriot/device-init/Godeps/_workspace/src/github.com/spf13/pflag"
+	flag "github.com/spf13/pflag"
 )
 
 // Command is just that, a command for your application.

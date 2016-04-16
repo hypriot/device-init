@@ -1,0 +1,5 @@
+wifi:
+  interfaces:
+    wlan0:
+      ssid: MyNetwork
+      password: my_secret_password

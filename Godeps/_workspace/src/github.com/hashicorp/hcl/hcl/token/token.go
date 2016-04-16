@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	hclstrconv "github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl/hcl/strconv"
+	hclstrconv "github.com/hashicorp/hcl/hcl/strconv"
 )
 
 // Token defines a single HCL token which can be obtained via the Scanner

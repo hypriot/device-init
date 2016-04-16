@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/hashicorp/hcl/hcl/token"
+	"github.com/hashicorp/hcl/hcl/token"
 )
 
 // PosError is a parse error that contains a position.

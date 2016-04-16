@@ -10,8 +10,8 @@
 package main
 
 import (
-	"github.com/hypriot/device-init/Godeps/_workspace/src/github.com/kr/text/colwriter"
 	"github.com/kr/pty"
+	"github.com/kr/text/colwriter"
 	"io"
 	"log"
 	"os"

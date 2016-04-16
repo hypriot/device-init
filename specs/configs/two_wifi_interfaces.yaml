@@ -1,0 +1,8 @@
+wifi:
+  interfaces:
+    wlan0:
+      ssid: MyNetwork
+      password: my_secret_password
+    wlan1:
+      ssid: MySecondNetwork
+      password: another_secret_password

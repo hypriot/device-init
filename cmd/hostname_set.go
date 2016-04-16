@@ -29,7 +29,7 @@ import (
 )
 
 // setCmd represents the set command
-var setCmd = &cobra.Command{
+var setHostnameCmd = &cobra.Command{
 	Use:   "set [hostname]",
 	Short: "Set a hostname",
 	Long:  ``,
@@ -43,7 +43,7 @@ var setCmd = &cobra.Command{
 }
 
 func init() {
-	hostnameCmd.AddCommand(setCmd)
+	hostnameCmd.AddCommand(setHostnameCmd)
 }
 
 func set_hostname(args ...string) {
@@ -59,39 +59,41 @@ func set_hostname(args ...string) {
 		hostname = args[0]
 	}
 
-	if hostname == "" {
+	if hostname == "" && cfgFile == "" {
 		fmt.Println("missing hostname argument")
 		return
 	}
 
-	err := ioutil.WriteFile("/etc/hostname", []byte(hostname), 0644)
-	if err != nil {
-		panic(err)
-	}
-
-	input, err := ioutil.ReadFile("/etc/hosts")
-	if err != nil {
-		panic(err)
-	}
-
-	lines := strings.Split(string(input), "\n")
-
-	for i, line := range lines {
-		if strings.Contains(line, "127.0.0.1	localhost") {
-			lines[i] = fmt.Sprintf("127.0.0.1	localhost	%s", hostname)
+	if hostname != "" {
+		err := ioutil.WriteFile("/etc/hostname", []byte(hostname), 0644)
+		if err != nil {
+			panic(err)
 		}
-	}
-	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile("/etc/hosts", []byte(output), 0644)
-	if err != nil {
-		panic(err)
-	}
 
-	set_hostname_cmd := exec.Command("hostname", hostname)
-	err = set_hostname_cmd.Run()
-	if err != nil {
-		panic(err)
-	}
+		input, err := ioutil.ReadFile("/etc/hosts")
+		if err != nil {
+			panic(err)
+		}
 
-	fmt.Printf("Set hostname: %s\n", hostname)
+		lines := strings.Split(string(input), "\n")
+
+		for i, line := range lines {
+			if strings.Contains(line, "127.0.0.1	localhost") {
+				lines[i] = fmt.Sprintf("127.0.0.1	localhost	%s", hostname)
+			}
+		}
+		output := strings.Join(lines, "\n")
+		err = ioutil.WriteFile("/etc/hosts", []byte(output), 0644)
+		if err != nil {
+			panic(err)
+		}
+
+		set_hostname_cmd := exec.Command("hostname", hostname)
+		err = set_hostname_cmd.Run()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Printf("Set hostname: %s\n", hostname)
+	}
 }

@@ -28,7 +28,7 @@ import (
 	"strings"
 )
 
-var showCmd = &cobra.Command{
+var showHostnameCmd = &cobra.Command{
 	Use:   "show",
 	Short: "Show a hostname",
 	Long:  ``,
@@ -39,5 +39,5 @@ var showCmd = &cobra.Command{
 }
 
 func init() {
-	hostnameCmd.AddCommand(showCmd)
+	hostnameCmd.AddCommand(showHostnameCmd)
 }
