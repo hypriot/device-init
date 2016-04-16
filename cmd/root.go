@@ -60,6 +60,7 @@ func set_all_commands() {
 	// If a config file is found, do stuff for all settings that are present
 	if err := config.ReadInConfig(); err == nil {
 		set_hostname()
+		set_wifi()
 	}
 }
 

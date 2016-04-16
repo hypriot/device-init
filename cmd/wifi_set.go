@@ -37,71 +37,74 @@ var setWifiCmd = &cobra.Command{
 	Short: "Set WiFi settings",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		set_wifi()
+	},
+}
 
-		var err error
+func set_wifi() {
+	var err error
 
-		readWifiConfig()
+	readWifiConfig()
 
-		const interfaceTemlate = `allow-hotplug {{.Name}}
+	const interfaceTemlate = `allow-hotplug {{.Name}}
 
 auto {{.Name}}
 iface {{.Name}} inet dhcp
-  wpa-ssid {{.Ssid}}
-  wpa-psk {{.Psk}}
+wpa-ssid {{.Ssid}}
+wpa-psk {{.Psk}}
 `
 
-		// if we have command line parameters only add those to our wifi configuration
-		if cmdInterfaceName != "" && cmdSsid != " " && cmdPassword != "" {
-			for key := range myWifiConfig.Interfaces {
-				delete(myWifiConfig.Interfaces, key)
-			}
-			myWifiConfig.Interfaces = make(map[string]Credentials)
-			myWifiConfig.Interfaces[cmdInterfaceName] = Credentials{Ssid: cmdSsid, Password: cmdPassword}
+	// if we have command line parameters only add those to our wifi configuration
+	if cmdInterfaceName != "" && cmdSsid != " " && cmdPassword != "" {
+		for key := range myWifiConfig.Interfaces {
+			delete(myWifiConfig.Interfaces, key)
+		}
+		myWifiConfig.Interfaces = make(map[string]Credentials)
+		myWifiConfig.Interfaces[cmdInterfaceName] = Credentials{Ssid: cmdSsid, Password: cmdPassword}
+	}
+
+	for interfaceName, interfaceCredentials := range myWifiConfig.Interfaces {
+
+		type templateVariables struct {
+			Name, Ssid, Psk string
 		}
 
-		for interfaceName, interfaceCredentials := range myWifiConfig.Interfaces {
-
-			type templateVariables struct {
-				Name, Ssid, Psk string
-			}
-
-			variables := templateVariables{
-				Name: interfaceName,
-				Ssid: interfaceCredentials.Ssid,
-				Psk:  create_encrypted_psk([]byte(interfaceCredentials.Password), []byte(interfaceCredentials.Ssid)),
-			}
-
-			err = os.MkdirAll(networkInterfacesPath, 0755)
-			if err != nil {
-				fmt.Println("Could not create path: ", networkInterfacesPath)
-			}
-
-			configFilePath := path.Join(networkInterfacesPath, interfaceName)
-			if _, err := os.Stat(configFilePath); err == nil {
-				filepath, filename := path.Dir(configFilePath), path.Base(configFilePath)
-				backupFile := "." + filename + ".backup"
-				backupPath := path.Join(filepath, backupFile)
-				err = os.Rename(configFilePath, backupPath)
-				if err != nil {
-					fmt.Println("Could not backup file ", backupPath, ": ", err)
-				}
-			}
-
-			f, err := os.Create(configFilePath)
-			defer f.Close()
-			if err != nil {
-				fmt.Println("Could not create file: "+configFilePath+": ", err)
-			}
-
-			t := template.Must(template.New("config").Parse(interfaceTemlate))
-
-			err = t.Execute(f, variables)
-			if err != nil {
-				fmt.Println("Error writing configuration:", err)
-			}
-
+		variables := templateVariables{
+			Name: interfaceName,
+			Ssid: interfaceCredentials.Ssid,
+			Psk:  create_encrypted_psk([]byte(interfaceCredentials.Password), []byte(interfaceCredentials.Ssid)),
 		}
-	},
+
+		err = os.MkdirAll(networkInterfacesPath, 0755)
+		if err != nil {
+			fmt.Println("Could not create path: ", networkInterfacesPath)
+		}
+
+		configFilePath := path.Join(networkInterfacesPath, interfaceName)
+		if _, err := os.Stat(configFilePath); err == nil {
+			filepath, filename := path.Dir(configFilePath), path.Base(configFilePath)
+			backupFile := "." + filename + ".backup"
+			backupPath := path.Join(filepath, backupFile)
+			err = os.Rename(configFilePath, backupPath)
+			if err != nil {
+				fmt.Println("Could not backup file ", backupPath, ": ", err)
+			}
+		}
+
+		f, err := os.Create(configFilePath)
+		defer f.Close()
+		if err != nil {
+			fmt.Println("Could not create file: "+configFilePath+": ", err)
+		}
+
+		t := template.Must(template.New("config").Parse(interfaceTemlate))
+
+		err = t.Execute(f, variables)
+		if err != nil {
+			fmt.Println("Error writing configuration:", err)
+		}
+
+	}
 }
 
 func init() {
