@@ -47,7 +47,7 @@ describe "device-init" do
         expect(status).to be(0)
 
         old_hostname_cmd_result = command('hostname').stdout
-        device_init_cmd_result = command('device-init').stdout
+        device_init_cmd_result = command('device-init -c').stdout
         new_hostname_cmd_result = command('hostname').stdout
 
         expect(old_hostname_cmd_result).to contain("device-tester")
