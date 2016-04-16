@@ -27,7 +27,10 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/pbkdf2"
 	"os"
+	"os/exec"
 	"path"
+	"regexp"
+	"strings"
 	"text/template"
 )
 
@@ -104,6 +107,13 @@ wpa-psk {{.Psk}}
 			fmt.Println("Error writing configuration:", err)
 		}
 
+		if interfaceExistsAndIsDown(interfaceName) {
+			err := exec.Command("ifup", interfaceName).Run()
+			if err != nil {
+				fmt.Println("Could not bring up interface :", interfaceName)
+			}
+		}
+
 	}
 }
 
@@ -125,4 +135,20 @@ func create_encrypted_psk(password, salt []byte) string {
 	defer clear(password)
 	result := pbkdf2.Key(password, salt, 4096, 32, sha1.New)
 	return hex.EncodeToString(result)
+}
+
+func interfaceExistsAndIsDown(interfaceName string) bool {
+	output, err := exec.Command("ip", "link").Output()
+	if err != nil {
+		fmt.Println("Could not run 'ip link'", err)
+	}
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		interfaceExists, _ := regexp.MatchString(interfaceName, line)
+		interfaceIsDown, _ := regexp.MatchString("state DOWN", line)
+		if interfaceExists && interfaceIsDown {
+			return true
+		}
+	}
+	return false
 }
