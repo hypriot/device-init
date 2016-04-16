@@ -42,7 +42,6 @@ var showWifiCmd = &cobra.Command{
 			for key := range myWifiConfig.Interfaces {
 				delete(myWifiConfig.Interfaces, key)
 			}
-			fmt.Println(cmdInterfaceName)
 			myWifiConfig.Interfaces = make(map[string]Credentials)
 			myWifiConfig.Interfaces[cmdInterfaceName] = Credentials{Ssid: "", Password: ""}
 		}
@@ -62,7 +61,7 @@ var showWifiCmd = &cobra.Command{
 						fmt.Println(line)
 					}
 				} else {
-					panic(err)
+					fmt.Printf("Could not open wifi configuration for interface '%s'\n", interfaceName)
 				}
 			}
 		} else {
