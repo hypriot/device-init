@@ -53,8 +53,8 @@ func set_wifi() {
 
 auto {{.Name}}
 iface {{.Name}} inet dhcp
-wpa-ssid {{.Ssid}}
-wpa-psk {{.Psk}}
+  wpa-ssid {{.Ssid}}
+  wpa-psk {{.Psk}}
 `
 
 	// if we have command line parameters only add those to our wifi configuration
@@ -108,12 +108,26 @@ wpa-psk {{.Psk}}
 		}
 
 		if interfaceExistsAndIsDown(interfaceName) {
-			err := exec.Command("ifup", interfaceName).Run()
+			output, err := exec.Command("/sbin/ifup", interfaceName).CombinedOutput()
 			if err != nil {
-				fmt.Println("Could not bring up interface :", interfaceName)
+				message := fmt.Sprintf("Could not bring up interface %s: %s", interfaceName, err)
+				fmt.Println(message)
 			}
+			fmt.Println(string(output)[:])
 		}
 
+		if interfaceExistsAndIsDown(interfaceName) {
+			output, err := exec.Command("/sbin/ifdown", interfaceName).CombinedOutput()
+			if err != nil {
+				message := fmt.Sprintf("Could not bring the interface down %s: %s ", interfaceName, err)
+			}
+			fmt.Println(string(output)[:])
+			output, err = exec.Command("/sbin/ifup", interfaceName).CombinedOutput()
+			if err != nil {
+				message := fmt.Sprintf("Could still not bring up interface %s: %s", interfaceName, err)
+				fmt.Println(message)
+			}
+		}
 	}
 }
 
