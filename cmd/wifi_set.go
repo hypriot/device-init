@@ -120,6 +120,7 @@ iface {{.Name}} inet dhcp
 			output, err := exec.Command("/sbin/ifdown", interfaceName).CombinedOutput()
 			if err != nil {
 				message := fmt.Sprintf("Could not bring the interface down %s: %s ", interfaceName, err)
+				fmt.Println(message)
 			}
 			fmt.Println(string(output)[:])
 			output, err = exec.Command("/sbin/ifup", interfaceName).CombinedOutput()
