@@ -25,6 +25,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -88,12 +89,46 @@ func set_hostname(args ...string) {
 			panic(err)
 		}
 
-		set_hostname_cmd := exec.Command("hostname", hostname)
-		err = set_hostname_cmd.Run()
+		err = exec.Command("hostname", hostname).Run()
 		if err != nil {
-			panic(err)
+			fmt.Println("Unable to set hostname: ", err)
+		}
+
+		// ensure that dhcp server and avahi daemon are aware of new hostname
+		for _, interfaceName := range activeInterfaces() {
+			err = exec.Command("/sbin/ifdown", interfaceName).Run()
+			if err != nil {
+				fmt.Println("Unable to bring interface down: ", interfaceName, err)
+			}
+
+			err = exec.Command("/sbin/ifup", interfaceName).Run()
+			if err != nil {
+				fmt.Println("Unable to bring interface up: ", interfaceName, err)
+			}
+		}
+
+		err = exec.Command("/bin/systemctl", "restart", "avahi-daemon").Run()
+		if err != nil {
+			fmt.Println("Unable to set hostname: ", err)
 		}
 
 		fmt.Printf("Set hostname: %s\n", hostname)
 	}
+}
+
+func activeInterfaces() []string {
+	var result []string
+	output, err := exec.Command("ip", "link").Output()
+	if err != nil {
+		fmt.Println("Could not run 'ip link'", err)
+	}
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		interfaceIsUp, _ := regexp.MatchString("state UP", line)
+		if interfaceIsUp {
+			re := regexp.MustCompile(`^\d*:\s([a-z0-9@]*):`)
+			result = append(result, re.FindStringSubmatch(line)[1])
+		}
+	}
+	return result
 }
