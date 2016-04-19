@@ -21,8 +21,18 @@ To replace the `/boot/occidentalis.txt` (as we want this feature for more boards
 
 The `device-init` tool reads the file `/boot/device-init.yaml` to initialize several settings while booting your device.
 
-### hostname
+### Hostname
 
 ```yaml
 hostname: "black-pearl"
+```
+
+### Wifi Settings
+
+```yaml
+wifi:
+  interfaces:
+    wlan0:
+      ssid: "MyNetwork"
+      password: "secret_password"
 ```
