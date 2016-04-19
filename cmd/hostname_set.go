@@ -112,7 +112,7 @@ func set_hostname(args ...string) {
 
 		err = exec.Command("/bin/systemctl", "restart", "avahi-daemon.service").Run()
 		if err != nil {
-			fmt.Println("Unable to set hostname: ", err)
+			fmt.Println("Unable to restart avahi-daemon: ", err)
 		}
 
 		fmt.Printf("Set hostname: %s\n", hostname)
