@@ -115,6 +115,11 @@ func set_hostname(args ...string) {
 			fmt.Println("Unable to restart avahi-daemon: ", err)
 		}
 
+		err = exec.Command("/bin/systemctl", "restart", "rsyslog.service").Run()
+		if err != nil {
+			fmt.Println("Unable to restart rsyslog: ", err)
+		}
+
 		fmt.Printf("Set hostname: %s\n", hostname)
 	}
 }
