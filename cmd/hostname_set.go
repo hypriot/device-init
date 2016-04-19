@@ -77,13 +77,16 @@ func set_hostname(args ...string) {
 		}
 
 		lines := strings.Split(string(input), "\n")
+		lines_new := []string{}
 
 		for i, line := range lines {
 			if strings.Contains(line, "127.0.0.1	localhost") {
-				lines[i] = fmt.Sprintf("127.0.0.1	localhost	%s", hostname)
+				lines_new = append(lines_new, lines[0:i+1]...)
+				lines_new = append(lines_new, fmt.Sprintf("127.0.0.1	%s", hostname))
+				lines_new = append(lines_new, lines[i+1:]...)
 			}
 		}
-		output := strings.Join(lines, "\n")
+		output := strings.Join(lines_new, "\n")
 		err = ioutil.WriteFile("/etc/hosts", []byte(output), 0644)
 		if err != nil {
 			panic(err)
