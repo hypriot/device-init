@@ -109,9 +109,9 @@ describe "device-init" do
     end
 
     context "with config-file" do
-      let(:config_one_wifi_interface)  { File.read(File.join(File.dirname(__FILE__), 'configs', 'one_wifi_interface.yaml')) }
-      let(:config_two_wifi_interfaces) { File.read(File.join(File.dirname(__FILE__), 'configs', 'two_wifi_interfaces.yaml')) }
-      let(:config_no_wifi)             { File.read(File.join(File.dirname(__FILE__), 'configs', 'no_wifi_interface.yaml')) }
+      let(:config_one_wifi_interface)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'one_wifi_interface.yaml')) }
+      let(:config_two_wifi_interfaces) { File.read(File.join(File.dirname(__FILE__), 'testdata', 'two_wifi_interfaces.yaml')) }
+      let(:config_no_wifi)             { File.read(File.join(File.dirname(__FILE__), 'testdata', 'no_wifi_interface.yaml')) }
 
       context "sets config" do
         before(:each) do
