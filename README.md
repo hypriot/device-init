@@ -36,3 +36,15 @@ wifi:
       ssid: "MyNetwork"
       password: "secret_password"
 ```
+
+### Docker Preload Images Settings
+device-init can preload local image files into the Docker engine on boot.
+Those images have to be exported via 'docker save image-name > image-name.tar'.
+It is recommended to compress the output of 'docker save' with 'gzip image-name.tar' which results in a image-name.tar.gz file.
+
+```yaml
+docker:
+  images:
+    - "/path/to/image-name.tar.gz"
+    - "/path/to/another-image-name.tar"
+```
