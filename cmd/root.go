@@ -61,6 +61,7 @@ func set_all_commands() {
 	if err := config.ReadInConfig(); err == nil {
 		set_hostname()
 		set_wifi()
+		docker_preload_images()
 	}
 }
 

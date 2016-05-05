@@ -8,12 +8,12 @@ compile: build clean
 	docker run -ti --rm -v $(shell pwd):/opt/gopath/src/github.com/hypriot/device-init -v $(shell pwd)/scripts/build.sh:/build.sh device-init /build.sh
 
 test: build
-	docker run -ti --rm --privileged --hostname device-tester -v $(shell pwd)/device-init_linux_amd64:/usr/local/bin/device-init -v $(shell pwd)/specs:/specs device-init rspec --format documentation --color /specs/
+	docker run -ti --rm --privileged --hostname device-tester -v $(shell pwd)/device-init_linux_amd64:/usr/local/bin/device-init -v $(shell pwd)/specs:/specs -v /var/run/docker.sock:/var/run/docker.sock device-init rspec --format documentation --color /specs/
 
 compile_and_test: compile test
 
 test-shell: build
-	docker run -ti --rm --privileged --hostname device-tester -v $(shell pwd)/device-init_linux_amd64:/usr/local/bin/device-init -v $(shell pwd)/specs:/specs device-init bash
+	docker run -ti --rm --privileged --hostname device-tester -v $(shell pwd)/device-init_linux_amd64:/usr/local/bin/device-init -v $(shell pwd)/specs:/specs -v /var/run/docker.sock:/var/run/docker.sock device-init bash
 
 shell: build
 	docker run -ti --rm -v $(shell pwd):/opt/gopath/src/github.com/hypriot/device-init -v $(shell pwd)/scripts/build.sh:/build.sh device-init /bin/bash
