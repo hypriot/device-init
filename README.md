@@ -12,7 +12,7 @@ To replace the `/boot/occidentalis.txt` (as we want this feature for more boards
 * ☐ Set timezone
 * ☐ Set locale
 * ☐ Set static IP (see hypriot/flash#25)
-* ☐ Pull some docker images
+* ☑ Pull some docker images
 * ☐ Install a list of DEB packages
 * ☐ Run a custom script from /boot
 * ...
