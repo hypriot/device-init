@@ -266,6 +266,14 @@ describe "device-init" do
         expect(device_init_cmd.exit_status).to be(0)
         expect(device_init_cmd.stdout).to contain('Image file does not exist: /var/not/exists/busybox.tar.gz')
       end
+
+      it "doesn't choke on a config file without docker key" do
+        echo_config_cmd = command(%Q(echo -n '' > /boot/device-init.yaml))
+        expect(echo_config_cmd.exit_status).to be(0)
+
+        device_init_cmd = command('device-init --config')
+        expect(device_init_cmd.exit_status).to be(0)
+      end
     end
   end
 
