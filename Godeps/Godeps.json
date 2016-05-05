@@ -8,6 +8,10 @@
 			"Rev": "5c4df71dfe9ac89ef6287afc05e4c1b16ae65a1e"
 		},
 		{
+			"ImportPath": "github.com/fsouza/go-dockerclient",
+			"Rev": "9aec3ae14d870a92b2a58a5838c2696ec4bfee9a"
+		},
+		{
 			"ImportPath": "github.com/hashicorp/hcl",
 			"Rev": "e96d23138c76470c808bf6586bdaf981bbd25cae"
 		},

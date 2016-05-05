@@ -198,4 +198,75 @@ describe "device-init" do
     end
   end
 
+  context "docker" do
+    context "preload-images" do
+      let(:preload_docker_images_tar_gz)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'preload_docker_images_tar_gz.yaml')) }
+      let(:preload_docker_images_tar)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'preload_docker_images_tar.yaml')) }
+      let(:preload_docker_images_non_existant)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'preload_docker_images_non_existant.yaml')) }
+
+      before(:each) do
+        cmd_search_image = command('docker images | grep -q busybox')
+        if cmd_search_image.exit_status == 0
+          rmi_image_cmd = command('docker rmi -f busybox')
+          expect(rmi_image_cmd.exit_status).to be(0)
+        end
+
+        echo_config_cmd = command(%Q(rm -f /boot/device-init.yaml))
+        expect(echo_config_cmd.exit_status).to be(0)
+      end
+
+      it "preloads local tar file images" do
+        echo_config_cmd = command(%Q(echo -n '#{preload_docker_images_tar}' > /boot/device-init.yaml))
+        expect(echo_config_cmd.exit_status).to be(0)
+
+        device_init_cmd = command('device-init --config')
+        expect(device_init_cmd.exit_status).to be(0)
+        expect(device_init_cmd.stdout).to contain('Imported image: /specs/testdata/busybox.tar')
+
+        docker_images_cmd = command('docker images')
+        expect(docker_images_cmd.stdout).to contain('busybox')
+      end
+
+      it "preloads local tar.gz file images" do
+        echo_config_cmd = command(%Q(echo -n '#{preload_docker_images_tar_gz}' > /boot/device-init.yaml))
+        expect(echo_config_cmd.exit_status).to be(0)
+
+        device_init_cmd = command('device-init --config')
+        expect(device_init_cmd.exit_status).to be(0)
+        expect(device_init_cmd.stdout).to contain('Imported image: /specs/testdata/busybox.tar.gz')
+
+        docker_images_cmd = command('docker images')
+        expect(docker_images_cmd.stdout).to contain('busybox')
+      end
+
+      it "doesn't preload images that were already imported" do
+        echo_config_cmd = command(%Q(echo -n '#{preload_docker_images_tar_gz}' > /boot/device-init.yaml))
+        expect(echo_config_cmd.exit_status).to be(0)
+
+        mkdir_cmd = command(%Q(mkdir -p /var/log/device-init))
+        expect(mkdir_cmd.exit_status).to be(0)
+
+        echo_logfile_cmd = command(%Q(echo -n '/specs/testdata/busybox.tar.gz' > /var/log/device-init/preloaded_images.log))
+        expect(echo_logfile_cmd.exit_status).to be(0)
+
+        device_init_cmd = command('device-init --config')
+        expect(device_init_cmd.exit_status).to be(0)
+
+        expect(device_init_cmd.stdout).to contain('Already imported image: /specs/testdata/busybox.tar.gz')
+
+        docker_images_cmd = command('docker images')
+        expect(docker_images_cmd.stdout).to_not contain('busybox')
+      end
+
+      it "doesn't preload images that do not exist" do
+        echo_config_cmd = command(%Q(echo -n '#{preload_docker_images_non_existant}' > /boot/device-init.yaml))
+        expect(echo_config_cmd.exit_status).to be(0)
+
+        device_init_cmd = command('device-init --config')
+        expect(device_init_cmd.exit_status).to be(0)
+        expect(device_init_cmd.stdout).to contain('Image file does not exist: /var/not/exists/busybox.tar.gz')
+      end
+    end
+  end
+
 end

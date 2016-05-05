@@ -1,0 +1,3 @@
+docker:
+  images:
+    - "/var/not/exists/busybox.tar.gz"

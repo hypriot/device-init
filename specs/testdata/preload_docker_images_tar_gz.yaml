@@ -1,0 +1,4 @@
+docker:
+  images:
+    - "/specs/testdata/busybox.tar.gz"
+    - "busybox"
