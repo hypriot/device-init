@@ -62,6 +62,7 @@ func set_all_commands() {
 		set_hostname()
 		set_wifi()
 		docker_preload_images()
+		manageClusterLab()
 	}
 }
 

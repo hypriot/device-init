@@ -277,4 +277,45 @@ describe "device-init" do
     end
   end
 
+  context "cluster-lab" do
+    let(:cluster_lab_enabled)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'cluster_lab_enabled.yaml')) }
+    let(:cluster_lab_disabled)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'cluster_lab_disabled.yaml')) }
+    let(:cluster_lab_command)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'fake_cluster_lab_command')) }
+    
+    before(:each) do
+      echo_cluster_lab_cmd = command(%Q(echo -n '#{cluster_lab_command}' > /usr/local/bin/cluster-lab))
+      expect(echo_cluster_lab_cmd.exit_status).to be(0)
+
+      chmod_cluster_lab_cmd = command(%Q(chmod +x /usr/local/bin/cluster-lab))
+      expect(chmod_cluster_lab_cmd.exit_status).to be(0)
+    end
+    after(:each) do
+      rm_cmd = command('rm -f /tmp/alive.log')
+      expect(rm_cmd.exit_status).to be(0)
+    end
+
+    it "runs cluster-lab when it is enabled" do
+      echo_config_cmd = command(%Q(echo -n '#{cluster_lab_enabled}' > /boot/device-init.yaml))
+      expect(echo_config_cmd.exit_status).to be(0)
+
+      device_init_cmd = command('device-init --config')
+      expect(device_init_cmd.exit_status).to be(0)
+     
+      cat_cmd = command('cat /tmp/alive.log')
+      expect(cat_cmd.exit_status).to be(0)
+      expect(cat_cmd.stdout).to contain('Cluster-Lab is alive!')
+    end
+
+    it "does not run cluster-lab when it is not enabled" do
+      echo_config_cmd = command(%Q(echo -n '#{cluster_lab_disabled}' > /boot/device-init.yaml))
+      expect(echo_config_cmd.exit_status).to be(0)
+
+      device_init_cmd = command('device-init --config')
+      expect(device_init_cmd.exit_status).to be(0)
+
+      cat_cmd = command('cat /tmp/alive.log')
+      expect(cat_cmd.exit_status).to be(1)
+    end
+  end
 end
+
