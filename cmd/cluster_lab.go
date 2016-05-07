@@ -56,19 +56,13 @@ func manageClusterLab() {
 		fmt.Println("Could not parse string to boolean value", err)
 	}
 
-	var action string
 	if runOnBoot {
-		action = "enable"
-	} else {
-		action = "disable"
+		err = exec.Command("/usr/local/bin/cluster-lab", "start").Run()
+		if err != nil {
+			fmt.Println("Unable to start cluster-lab:", err)
+		}
+		fmt.Println("Running")
 	}
-
-	cmd := fmt.Sprintf("systemctl %s cluster-lab", action)
-	err = exec.Command(cmd).Run()
-	if err != nil {
-		fmt.Printf("Unable to %s cluster-lab: %s\n", action, err)
-	}
-
 }
 
 func readClusterLabConfig() {
