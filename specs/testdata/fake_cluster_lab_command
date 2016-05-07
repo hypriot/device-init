@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "Cluster-Lab is alive!" > /tmp/alive.log
