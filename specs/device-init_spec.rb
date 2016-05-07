@@ -277,4 +277,29 @@ describe "device-init" do
     end
   end
 
+  context "cluster-lab" do
+    let(:cluster_lab_enabled)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'cluster_lab_enabled.yaml')) }
+    let(:cluster_lab_disabled)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'cluster_lab_disabled.yaml')) }
+
+    it "calls systemctl to enable cluster-lab service" do
+      echo_config_cmd = command(%Q(echo -n '#{cluster_lab_enabled}' > /boot/device-init.yaml))
+      expect(echo_config_cmd.exit_status).to be(0)
+
+      device_init_cmd = command('device-init --config')
+      expect(device_init_cmd.exit_status).to be(0)
+
+      expect(device_init_cmd.stdout).to contain('Unable to enable cluster-lab')
+    end
+
+    it "calls systemctl to disable cluster-lab service" do
+      echo_config_cmd = command(%Q(echo -n '#{cluster_lab_disabled}' > /boot/device-init.yaml))
+      expect(echo_config_cmd.exit_status).to be(0)
+
+      device_init_cmd = command('device-init --config')
+      expect(device_init_cmd.exit_status).to be(0)
+
+      expect(device_init_cmd.stdout).to contain('Unable to disable cluster-lab')
+    end
+  end
 end
+
