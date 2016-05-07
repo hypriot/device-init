@@ -49,7 +49,7 @@ docker:
     - "/path/to/another-image-name.tar"
 ```
 
-### Docker Preload Images Settings
+### Hypriot Cluster-Lab
 device-init can start the Hypriot Cluster-Lab on start up by setting the 'run_on_boot' option to 'true'.
 
 ```
