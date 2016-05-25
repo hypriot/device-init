@@ -26,3 +26,27 @@ deploy:
     dist: "debian/wheezy"
     on:
       tags: true
+  - provider: packagecloud
+    repository: "Schatzkiste"
+    username: "Hypriot"
+    token:
+      secure: "jrAcpyT30EvFhvcePM/D2ty3hUQFHPJa7A5zmMUMh9klXPCJn4bj58b1oxl08iC3/oTokLOOAh2Php0w/FujlXgVEg4oDX9JE0pfV+YIwwILB8aHuB1C8sYSdkWXHk0nYfM2bJNHSVt96e3ONHWmpyVXovKa5eDF/gc+sihtOx6mBqwdwVVrBH9nMWlUTlAnyKSEgSU3gf1U1iS6IkAhVCFjmBckMKj/Td0ayK2+Qh/0gToTjpoBE7H+o46Ix8pO2VxVt9hvBRkIjsFWfJWaGL+mj9ww7kR+B7BYbxPSoWD09olMGqMJQ+lPVwND/mU7S6XEfSglBLgvriRQ6Ysg1wOc19aQVGPN1Q4I4Bv7qcSRDubVXaRVxeCaDozYkdyWYUv3VHxbuSFOtlwUj4t6sCwqjKYvCsNP3hLZEemrM38tn+goMDl5a0UNJANMWFyaeni7LT3CTaWJNPLfk0fn6yoTUngsTJSk01MWvw/eDRWcJPHHoMkibDoJ13EOHISgUIBV2HfCuuvZTa/d6c/TSKw5oKxGxgyi4U5kaEaX3NX2a/6cLS3Ishxm9f+g+4cFfZlQh1wCm+S1FhWfBe+Q0qVwtJZJg5mSgF6sTcyKlem5Ib3qdho7t+9fZ4Qhy7ZUPIweL/y3HIiOldwH2CW9hSm69S/aWEmRAjcF1m/juKA="
+    dist: "debian/jessie"
+    on:
+      tags: true
+  - provider: packagecloud
+    repository: "Schatzkiste"
+    username: "Hypriot"
+    token:
+      secure: "jrAcpyT30EvFhvcePM/D2ty3hUQFHPJa7A5zmMUMh9klXPCJn4bj58b1oxl08iC3/oTokLOOAh2Php0w/FujlXgVEg4oDX9JE0pfV+YIwwILB8aHuB1C8sYSdkWXHk0nYfM2bJNHSVt96e3ONHWmpyVXovKa5eDF/gc+sihtOx6mBqwdwVVrBH9nMWlUTlAnyKSEgSU3gf1U1iS6IkAhVCFjmBckMKj/Td0ayK2+Qh/0gToTjpoBE7H+o46Ix8pO2VxVt9hvBRkIjsFWfJWaGL+mj9ww7kR+B7BYbxPSoWD09olMGqMJQ+lPVwND/mU7S6XEfSglBLgvriRQ6Ysg1wOc19aQVGPN1Q4I4Bv7qcSRDubVXaRVxeCaDozYkdyWYUv3VHxbuSFOtlwUj4t6sCwqjKYvCsNP3hLZEemrM38tn+goMDl5a0UNJANMWFyaeni7LT3CTaWJNPLfk0fn6yoTUngsTJSk01MWvw/eDRWcJPHHoMkibDoJ13EOHISgUIBV2HfCuuvZTa/d6c/TSKw5oKxGxgyi4U5kaEaX3NX2a/6cLS3Ishxm9f+g+4cFfZlQh1wCm+S1FhWfBe+Q0qVwtJZJg5mSgF6sTcyKlem5Ib3qdho7t+9fZ4Qhy7ZUPIweL/y3HIiOldwH2CW9hSm69S/aWEmRAjcF1m/juKA="
+    dist: "raspbian/wheezy"
+    on:
+      tags: true
+  - provider: packagecloud
+    repository: "Schatzkiste"
+    username: "Hypriot"
+    token:
+      secure: "jrAcpyT30EvFhvcePM/D2ty3hUQFHPJa7A5zmMUMh9klXPCJn4bj58b1oxl08iC3/oTokLOOAh2Php0w/FujlXgVEg4oDX9JE0pfV+YIwwILB8aHuB1C8sYSdkWXHk0nYfM2bJNHSVt96e3ONHWmpyVXovKa5eDF/gc+sihtOx6mBqwdwVVrBH9nMWlUTlAnyKSEgSU3gf1U1iS6IkAhVCFjmBckMKj/Td0ayK2+Qh/0gToTjpoBE7H+o46Ix8pO2VxVt9hvBRkIjsFWfJWaGL+mj9ww7kR+B7BYbxPSoWD09olMGqMJQ+lPVwND/mU7S6XEfSglBLgvriRQ6Ysg1wOc19aQVGPN1Q4I4Bv7qcSRDubVXaRVxeCaDozYkdyWYUv3VHxbuSFOtlwUj4t6sCwqjKYvCsNP3hLZEemrM38tn+goMDl5a0UNJANMWFyaeni7LT3CTaWJNPLfk0fn6yoTUngsTJSk01MWvw/eDRWcJPHHoMkibDoJ13EOHISgUIBV2HfCuuvZTa/d6c/TSKw5oKxGxgyi4U5kaEaX3NX2a/6cLS3Ishxm9f+g+4cFfZlQh1wCm+S1FhWfBe+Q0qVwtJZJg5mSgF6sTcyKlem5Ib3qdho7t+9fZ4Qhy7ZUPIweL/y3HIiOldwH2CW9hSm69S/aWEmRAjcF1m/juKA="
+    dist: "raspbian/jessie"
+    on:
+      tags: true
