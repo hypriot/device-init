@@ -71,25 +71,10 @@ func set_hostname(args ...string) {
 			panic(err)
 		}
 
-		input, err := ioutil.ReadFile("/etc/hosts")
-		if err != nil {
-			panic(err)
-		}
+		hostname_line := fmt.Sprintf("127.0.0.1	%s # added by device-init", hostname)
 
-		lines := strings.Split(string(input), "\n")
-		lines_new := []string{}
-
-		for i, line := range lines {
-			if strings.Contains(line, "127.0.0.1	localhost") {
-				lines_new = append(lines_new, lines[0:i+1]...)
-				lines_new = append(lines_new, fmt.Sprintf("127.0.0.1	%s", hostname))
-				lines_new = append(lines_new, lines[i+1:]...)
-			}
-		}
-		output := strings.Join(lines_new, "\n")
-		err = ioutil.WriteFile("/etc/hosts", []byte(output), 0644)
-		if err != nil {
-			panic(err)
+		if !is_present_in_hosts_file(hostname_line) && !is_present_in_hosts_file(hostname) {
+			addHostname(hostname_line)
 		}
 
 		err = exec.Command("hostname", hostname).Run()
@@ -139,4 +124,50 @@ func activeInterfaces() []string {
 		}
 	}
 	return result
+}
+
+func is_present_in_hosts_file(search_string string) bool {
+	found := false
+	for _, line := range readHostsFile() {
+		if strings.Contains(line, search_string) {
+			found = true
+		}
+	}
+	return found
+}
+
+func addHostname(hostname_line string) {
+	lines_old := readHostsFile()
+	lines_new := []string{}
+
+	if is_present_in_hosts_file("# added by device-init") {
+		for i, line := range lines_old {
+			if strings.Contains(line, "# added by device-init") {
+				lines_new = append(lines_new, lines_old[0:i]...)
+				lines_new = append(lines_new, hostname_line)
+				lines_new = append(lines_new, lines_old[i+1:]...)
+			}
+		}
+	} else {
+		for i, line := range lines_old {
+			if strings.Contains(line, "127.0.0.1	localhost") {
+				lines_new = append(lines_new, lines_old[0:i+1]...)
+				lines_new = append(lines_new, hostname_line)
+				lines_new = append(lines_new, lines_old[i+1:]...)
+			}
+		}
+	}
+	output := strings.Join(lines_new, "\n")
+	err := ioutil.WriteFile("/etc/hosts", []byte(output), 0644)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func readHostsFile() []string {
+	input, err := ioutil.ReadFile("/etc/hosts")
+	if err != nil {
+		panic(err)
+	}
+	return strings.Split(string(input), "\n")
 }

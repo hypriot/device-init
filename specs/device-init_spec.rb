@@ -18,7 +18,7 @@ describe "device-init" do
 
   context "hostname" do
     before(:each) do
-      system('device-init hostname set device-tester >> /dev/null')
+      # system('device-init hostname set device-tester >> /dev/null')
       system('rm -f /boot/device-init.yaml')
     end
 
@@ -31,28 +31,67 @@ describe "device-init" do
       end
 
       it "sets hostname" do
-        old_hostname_cmd_result = command('hostname').stdout
-        device_init_cmd_result = command('device-init hostname set black-pearl').stdout
+        device_init_cmd_result = command('device-init hostname set black-beauty').stdout
         new_hostname_cmd_result = command('hostname').stdout
 
-        expect(old_hostname_cmd_result).to contain("device-tester")
         expect(device_init_cmd_result).to contain("Set")
-        expect(new_hostname_cmd_result).to contain("black-pearl")
+        expect(new_hostname_cmd_result).to contain("black-beauty")
+      end
+
+      it "does not set hostname twice" do
+        device_init_cmd_result_one = command('device-init hostname set black-widow').stdout
+        device_init_cmd_result_two = command('device-init hostname set black-widow').stdout
+        hosts_file_content = command('cat /etc/hosts').stdout
+
+        expect(device_init_cmd_result_one).to contain("Set")
+        expect(device_init_cmd_result_two).to contain("Set")
+        expect(hosts_file_content.scan(/black-widow/).count).to eq(1)
+      end
+
+      it "replaces existing device-init hostname entry if it already exists" do
+        device_init_cmd_result = command('device-init hostname set black-mamba').stdout
+        hosts_file_content = command('cat /etc/hosts').stdout
+        
+        expect(device_init_cmd_result).to contain("Set")
+        expect(hosts_file_content.scan(/black-mamba/).count).to eq(1)
+        expect(hosts_file_content.scan(/black-widow/).count).to eq(0)
+      end
+
+      it "it does not replaces existing hostname entry if it already exists" do
+        hostname = 'black-pearl'
+        hosts_file = %Q(
+127.0.0.1 localhost
+127.0.0.1 #{hostname}
+::1 localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2  device-tester
+        )
+
+        command(%Q(echo -n '#{hosts_file}' > /etc/hosts)).stdout
+        device_init_cmd_result = command("device-init hostname set #{hostname}").stdout
+        hosts_file_content = command('cat /etc/hosts').stdout
+
+        expect(device_init_cmd_result).to contain("Set")
+        expect(hosts_file_content.scan(/\# added by device-init/).count).to eq(0)
+        expect(hosts_file_content.scan(/#{Regexp.quote(hostname)}/).count).to eq(1)
       end
     end
 
     context "with config-file" do
       it "sets hostname" do
-        status = command(%q(echo -n 'hostname: "black-pearl"\n' > /boot/device-init.yaml)).exit_status
+        status = command(%q(echo -n 'hostname: "black-mood"\n' > /boot/device-init.yaml)).exit_status
         expect(status).to be(0)
 
         old_hostname_cmd_result = command('hostname').stdout
         device_init_cmd_result = command('device-init --config').stdout
         new_hostname_cmd_result = command('hostname').stdout
 
-        expect(old_hostname_cmd_result).to contain("device-tester")
+        expect(old_hostname_cmd_result).to contain("black-pearl")
         expect(device_init_cmd_result).to contain("Set")
-        expect(new_hostname_cmd_result).to contain("black-pearl")
+        expect(new_hostname_cmd_result).to contain("black-mood")
       end
     end
   end
