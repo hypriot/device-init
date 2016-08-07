@@ -60,7 +60,7 @@ func set_all_commands() {
 	// If a config file is found, do stuff for all settings that are present
 	if err := config.ReadInConfig(); err == nil {
 		setHostname()
-		set_wifi()
+		setWifi()
 		dockerPreloadImages()
 		manageClusterLab()
 	}
