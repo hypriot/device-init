@@ -44,7 +44,7 @@ var networkInterfacesPath = "/etc/network/interfaces.d"
 // wifiCmd represents the wifi command
 var wifiCmd = &cobra.Command{
 	Use:   "wifi",
-	Short: "set or show WiFi settings",
+	Short: "set WiFi settings",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
