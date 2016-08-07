@@ -116,6 +116,7 @@ iface {{.Name}} inet dhcp
 			fmt.Println(string(output)[:])
 		}
 
+		// try to bring the interface up once more but bring it down before
 		if interfaceExistsAndIsDown(interfaceName) {
 			output, err := exec.Command("/sbin/ifdown", interfaceName).CombinedOutput()
 			if err != nil {
