@@ -41,11 +41,11 @@ var preload_imagesCmd = &cobra.Command{
 	Short: "Preload Docker images",
 	Long:  `Preload Docker images that are defined in device-init.yaml.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		docker_preload_images()
+		dockerPreloadImages()
 	},
 }
 
-func docker_preload_images() {
+func dockerPreloadImages() {
 	readDockerConfig()
 
 	for _, imageFile := range myDockerConfig.Images {
