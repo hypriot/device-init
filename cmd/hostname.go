@@ -27,7 +27,7 @@ import (
 // hostnameCmd represents the hostname command
 var hostnameCmd = &cobra.Command{
 	Use:   "hostname",
-	Short: "Set or show hostname",
+	Short: "set hostname",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()

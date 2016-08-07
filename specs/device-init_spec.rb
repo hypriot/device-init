@@ -18,18 +18,10 @@ describe "device-init" do
 
   context "hostname" do
     before(:each) do
-      # system('device-init hostname set device-tester >> /dev/null')
       system('rm -f /boot/device-init.yaml')
     end
 
     context "with command hostname" do
-      it "shows hostname" do
-        hostname_cmd_result = command('hostname').stdout
-        device_init_cmd_result = command('device-init hostname show').stdout
-
-        expect(device_init_cmd_result).to contain(hostname_cmd_result)
-      end
-
       it "sets hostname" do
         device_init_cmd_result = command('device-init hostname set black-beauty').stdout
         new_hostname_cmd_result = command('hostname').stdout
@@ -100,30 +92,6 @@ ff02::2 ip6-allrouters
     context "with command wifi" do
       before(:each) do
         expect(command('rm -Rf /etc/network/interfaces.d').exit_status).to be(0)
-      end
-
-      it "shows config" do
-        network_interface_dir = file('/etc/network/interfaces.d/')
-        expect(network_interface_dir.exists?).to be(false)
-
-        wlan0 = "allow-hotplug wlan1\n\nauto wlan0\niface wlan1 inet dhcp\nwpa-ssid MySecondNetwork\nwpa-psk 32919a0369631b758391d00e2aaaf66e6ab61b61949cc853c45410fbf4910442"
-        status = command(%Q(mkdir -p /etc/network/interfaces.d && echo -n '#{wlan0}' > /etc/network/interfaces.d/wlan0)).exit_status
-        expect(status).to be(0)
-
-        device_init_cmd_result = command('device-init wifi show -i wlan0')
-        expect(device_init_cmd_result.exit_status).to be(0)
-        expect(device_init_cmd_result.stdout).to contain('wlan0 in /etc/network/interfaces.d/wlan0')
-        expect(device_init_cmd_result.stdout).to contain('------------------------------------------')
-        expect(device_init_cmd_result.stdout).to contain('wpa-psk 32919a0369631b758391d00e2aaaf66e6ab61b61949cc853c45410fbf4910442')
-      end
-
-      it "fails for non-existent interface" do
-        network_interface_dir = file('/etc/network/interfaces.d/')
-        expect(network_interface_dir.exists?).to be(false)
-
-        device_init_cmd_result = command('device-init wifi show -i wlan3')
-        expect(device_init_cmd_result.exit_status).to be(0)
-        expect(device_init_cmd_result.stdout).to contain("Could not open wifi configuration for interface 'wlan3'")
       end
 
       it "sets config" do
@@ -218,22 +186,6 @@ ff02::2 ip6-allrouters
         end
       end
 
-      context "show config" do
-        it "for interfaces in device-init.yaml" do
-          status = command(%Q(echo -n '#{config_one_wifi_interface}' > /boot/device-init.yaml)).exit_status
-          expect(status).to be(0)
-
-          wlan0 = "allow-hotplug wlan1\n\nauto wlan0\niface wlan1 inet dhcp\nwpa-ssid MySecondNetwork\nwpa-psk 32919a0369631b758391d00e2aaaf66e6ab61b61949cc853c45410fbf4910442"
-          status = command(%Q(mkdir -p /etc/network/interfaces.d && echo -n '#{wlan0}' > /etc/network/interfaces.d/wlan0)).exit_status
-          expect(status).to be(0)
-
-          device_init_cmd_result = command('device-init wifi show -c')
-          expect(device_init_cmd_result.exit_status).to be(0)
-          expect(device_init_cmd_result.stdout).to contain('wlan0 in /etc/network/interfaces.d/wlan0')
-          expect(device_init_cmd_result.stdout).to contain('------------------------------------------')
-          expect(device_init_cmd_result.stdout).to contain('wpa-psk 32919a0369631b758391d00e2aaaf66e6ab61b61949cc853c45410fbf4910442')
-        end
-      end
     end
   end
 
