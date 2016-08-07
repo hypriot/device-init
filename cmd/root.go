@@ -40,7 +40,7 @@ This ranges from configuration as simple as setting a hostname to
 more complex stuff as configuring WiFi access.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if cfgFile != "" {
-			set_all_commands()
+			setAllCommands()
 		} else {
 			cmd.Help()
 		}
@@ -56,12 +56,12 @@ func Execute() {
 	}
 }
 
-func set_all_commands() {
+func setAllCommands() {
 	// If a config file is found, do stuff for all settings that are present
 	if err := config.ReadInConfig(); err == nil {
-		set_hostname()
-		set_wifi()
-		docker_preload_images()
+		setHostname()
+		setWifi()
+		dockerPreloadImages()
 		manageClusterLab()
 	}
 }

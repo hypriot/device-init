@@ -41,11 +41,11 @@ var preload_imagesCmd = &cobra.Command{
 	Short: "Preload Docker images",
 	Long:  `Preload Docker images that are defined in device-init.yaml.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		docker_preload_images()
+		dockerPreloadImages()
 	},
 }
 
-func docker_preload_images() {
+func dockerPreloadImages() {
 	readDockerConfig()
 
 	for _, imageFile := range myDockerConfig.Images {
@@ -95,7 +95,7 @@ func importImage(path string) {
 		}
 		defer plainFile.Close()
 
-		if is_compressed(path) {
+		if isCompressed(path) {
 			gzipFile, err := gzip.NewReader(plainFile)
 			if err != nil {
 				fmt.Println("Could not open zipped file:", err)
@@ -117,8 +117,8 @@ func importImage(path string) {
 	}
 }
 
-func is_compressed(path string) bool {
-	isCompressed := false
+func isCompressed(path string) bool {
+	compressed := false
 	if gz, _ := filepath.Match("*.tar.gz", filepath.Base(path)); gz {
 		file, err := os.Open(path)
 		if err != nil {
@@ -134,10 +134,10 @@ func is_compressed(path string) bool {
 
 		filetype := http.DetectContentType(buff)
 		if filetype == "application/x-gzip" {
-			isCompressed = true
+			compressed = true
 		}
 	}
-	return isCompressed
+	return compressed
 }
 
 func logImportedImage(path string) {

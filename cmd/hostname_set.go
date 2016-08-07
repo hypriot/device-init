@@ -36,7 +36,7 @@ var setHostnameCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
-			set_hostname(args[0])
+			setHostname(args[0])
 		} else {
 			cmd.Help()
 		}
@@ -47,7 +47,7 @@ func init() {
 	hostnameCmd.AddCommand(setHostnameCmd)
 }
 
-func set_hostname(args ...string) {
+func setHostname(args ...string) {
 	hostname := ""
 
 	// if we have hostname in config file use that

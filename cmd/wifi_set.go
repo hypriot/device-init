@@ -40,11 +40,11 @@ var setWifiCmd = &cobra.Command{
 	Short: "Set WiFi settings",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		set_wifi()
+		setWifi()
 	},
 }
 
-func set_wifi() {
+func setWifi() {
 	var err error
 
 	readWifiConfig()
@@ -75,7 +75,7 @@ iface {{.Name}} inet dhcp
 		variables := templateVariables{
 			Name: interfaceName,
 			Ssid: interfaceCredentials.Ssid,
-			Psk:  create_encrypted_psk([]byte(interfaceCredentials.Password), []byte(interfaceCredentials.Ssid)),
+			Psk:  createEncryptedPsk([]byte(interfaceCredentials.Password), []byte(interfaceCredentials.Ssid)),
 		}
 
 		err = os.MkdirAll(networkInterfacesPath, 0755)
@@ -146,7 +146,7 @@ func clear(b []byte) {
 
 // https://godoc.org/golang.org/x/crypto
 // http://docs.ros.org/diamondback/api/wpa_supplicant/html/wpa__passphrase_8c_source.html
-func create_encrypted_psk(password, salt []byte) string {
+func createEncryptedPsk(password, salt []byte) string {
 	defer clear(password)
 	result := pbkdf2.Key(password, salt, 4096, 32, sha1.New)
 	return hex.EncodeToString(result)
