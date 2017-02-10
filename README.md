@@ -12,7 +12,7 @@ To replace the `/boot/occidentalis.txt` (as we want this feature for more boards
 * ☐ Set static IP (see hypriot/flash#25)
 * ☑ Pull some docker images
 * ☐ Install a list of DEB packages
-* ☐ Run a custom script from /boot
+* ☑ Run a custom script from /boot
 * ...
 
 ## The /boot/device-init.yaml
@@ -46,6 +46,15 @@ docker:
     - "/path/to/image-name.tar.gz"
     - "/path/to/another-image-name.tar"
 ```
+
+### Run a Command
+device-init can execute a list of commands on boot. e.g.:
+```yaml
+runcmd:
+  - "apt-get install package-name"
+  - "curl https://raw.githubusercontent.com/.../myscript.sh | sh"
+```
+Make sure that the command lines do not produce YAML syntax errors. You can check [here](http://www.yamllint.com/)  
 
 ### Hypriot Cluster-Lab
 device-init can start the Hypriot Cluster-Lab on start up by setting the 'run_on_boot' option to 'true'.

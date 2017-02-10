@@ -63,6 +63,7 @@ func setAllCommands() {
 		setWifi()
 		dockerPreloadImages()
 		manageClusterLab()
+		runCommands()
 	}
 }
 

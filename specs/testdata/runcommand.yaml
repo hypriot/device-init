@@ -1,0 +1,5 @@
+runcmd:
+   # Execute a line. It does not require quotes, because it is valid yaml
+ - ls / | grep home > /tmp/test-without-quotes.txt
+   # Execute a line that requires quotes, because the colon is followed by space and would cause invalid yaml otherwise
+ - "echo hello: > /tmp/test-with-quotes.txt"
