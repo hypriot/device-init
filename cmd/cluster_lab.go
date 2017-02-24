@@ -51,18 +51,21 @@ func init() {
 func manageClusterLab() {
 	readClusterLabConfig()
 
-	runOnBoot, err := strconv.ParseBool(myClusterLabConfig.Service["run_on_boot"])
-	if err != nil {
-		fmt.Println("Could not parse string to boolean value", err)
+	if myClusterLabConfig.Service["run_on_boot"] != "" {
+		runOnBoot, err := strconv.ParseBool(myClusterLabConfig.Service["run_on_boot"])
+		if err != nil {
+			fmt.Println("Could not parse string to boolean value", err)
+		}
+
+		if runOnBoot {
+			err := exec.Command("/usr/local/bin/cluster-lab", "start").Run()
+			if err != nil {
+				fmt.Println("Unable to start cluster-lab:", err)
+			}
+			fmt.Println("Running")
+		}
 	}
 
-	if runOnBoot {
-		err = exec.Command("/usr/local/bin/cluster-lab", "start").Run()
-		if err != nil {
-			fmt.Println("Unable to start cluster-lab:", err)
-		}
-		fmt.Println("Running")
-	}
 }
 
 func readClusterLabConfig() {
