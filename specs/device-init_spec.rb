@@ -308,5 +308,35 @@ ff02::2 ip6-allrouters
       expect(cat_cmd.exit_status).to be(1)
     end
   end
+
+  context "run command" do
+      let(:runcommand)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'runcommand.yaml')) }
+       before(:each) do
+               echo_config_cmd = command(%Q(rm -f /boot/device-init.yaml))
+               expect(echo_config_cmd.exit_status).to be(0)
+       end
+
+        it "executes commands" do
+            echo_config_cmd = command(%Q(echo -n '#{runcommand}' > /boot/device-init.yaml))
+            expect(echo_config_cmd.exit_status).to be(0)
+
+            device_init_cmd = command('device-init --config')
+            expect(device_init_cmd.exit_status).to be(0)
+
+            test_file = file('/tmp/test-without-quotes.txt')
+            expect(test_file.exists?).to be(true)
+
+            test_file = file('/tmp/test-with-quotes.txt')
+            expect(test_file.exists?).to be(true)
+        end
+
+        it "doesn't choke on a config file without runcmd key" do
+                echo_config_cmd = command(%Q(echo -n '' > /boot/device-init.yaml))
+                expect(echo_config_cmd.exit_status).to be(0)
+
+                device_init_cmd = command('device-init --config')
+                expect(device_init_cmd.exit_status).to be(0)
+              end
+  end
 end
 
