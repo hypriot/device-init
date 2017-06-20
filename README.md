@@ -9,7 +9,7 @@ To replace the `/boot/occidentalis.txt` (as we want this feature for more boards
 * ☑ Set WiFi SSID/PSK
 * ☐ Set timezone
 * ☐ Set locale
-* ☐ Set static IP (see hypriot/flash#25)
+* ☐ Set static IP (see hypriot/device-init#6)
 * ☑ Pull some docker images
 * ☐ Install a list of DEB packages
 * ☑ Run a custom script from /boot
