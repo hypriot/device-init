@@ -9,7 +9,8 @@ To replace the `/boot/occidentalis.txt` (as we want this feature for more boards
 * ☑ Set WiFi SSID/PSK
 * ☐ Set timezone
 * ☐ Set locale
-* ☐ Set static IP (see hypriot/device-init#6)
+* ☑ Set static IP
+* ☑ Configure network interfaces
 * ☑ Pull some docker images
 * ☐ Install a list of DEB packages
 * ☑ Run a custom script from /boot
@@ -48,6 +49,8 @@ network:
 ```
 
 ### Wifi Settings
+
+This option only allows creating wlan intefaces and setting SSID/PSK. For advanced configuration see [network configuration](#network-settings).
 
 ```yaml
 wifi:
