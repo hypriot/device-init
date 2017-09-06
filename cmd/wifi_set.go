@@ -23,15 +23,9 @@ package cmd
 import (
 	"crypto/sha1"
 	"encoding/hex"
-	"fmt"
+
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/pbkdf2"
-	"os"
-	"os/exec"
-	"path"
-	"regexp"
-	"strings"
-	"text/template"
 )
 
 // setCmd represents the set command
@@ -45,17 +39,7 @@ var setWifiCmd = &cobra.Command{
 }
 
 func setWifi() {
-	var err error
-
 	readWifiConfig()
-
-	const interfaceTemlate = `allow-hotplug {{.Name}}
-
-auto {{.Name}}
-iface {{.Name}} inet dhcp
-  wpa-ssid {{.Ssid}}
-  wpa-psk {{.Psk}}
-`
 
 	// if we have command line parameters only add those to our wifi configuration
 	if cmdInterfaceName != "" && cmdSsid != " " && cmdPassword != "" {
@@ -67,69 +51,13 @@ iface {{.Name}} inet dhcp
 	}
 
 	for interfaceName, interfaceCredentials := range myWifiConfig.Interfaces {
-
-		type templateVariables struct {
-			Name, Ssid, Psk string
-		}
-
-		variables := templateVariables{
+		variables := Interface{
 			Name: interfaceName,
-			Ssid: interfaceCredentials.Ssid,
-			Psk:  createEncryptedPsk([]byte(interfaceCredentials.Password), []byte(interfaceCredentials.Ssid)),
+			SSID: interfaceCredentials.Ssid,
+			Password:  createEncryptedPsk([]byte(interfaceCredentials.Password), []byte(interfaceCredentials.Ssid)),
 		}
-
-		err = os.MkdirAll(networkInterfacesPath, 0755)
-		if err != nil {
-			fmt.Println("Could not create path: ", networkInterfacesPath)
-		}
-
-		configFilePath := path.Join(networkInterfacesPath, interfaceName)
-		if _, err := os.Stat(configFilePath); err == nil {
-			filepath, filename := path.Dir(configFilePath), path.Base(configFilePath)
-			backupFile := "." + filename + ".backup"
-			backupPath := path.Join(filepath, backupFile)
-			err = os.Rename(configFilePath, backupPath)
-			if err != nil {
-				fmt.Println("Could not backup file ", backupPath, ": ", err)
-			}
-		}
-
-		f, err := os.Create(configFilePath)
-		defer f.Close()
-		if err != nil {
-			fmt.Println("Could not create file: "+configFilePath+": ", err)
-		}
-
-		t := template.Must(template.New("config").Parse(interfaceTemlate))
-
-		err = t.Execute(f, variables)
-		if err != nil {
-			fmt.Println("Error writing configuration:", err)
-		}
-
-		if interfaceExistsAndIsDown(interfaceName) {
-			output, err := exec.Command("/sbin/ifup", interfaceName).CombinedOutput()
-			if err != nil {
-				message := fmt.Sprintf("Could not bring up interface %s: %s", interfaceName, err)
-				fmt.Println(message)
-			}
-			fmt.Println(string(output)[:])
-		}
-
-		// try to bring the interface up once more but bring it down before
-		if interfaceExistsAndIsDown(interfaceName) {
-			output, err := exec.Command("/sbin/ifdown", interfaceName).CombinedOutput()
-			if err != nil {
-				message := fmt.Sprintf("Could not bring the interface down %s: %s ", interfaceName, err)
-				fmt.Println(message)
-			}
-			fmt.Println(string(output)[:])
-			output, err = exec.Command("/sbin/ifup", interfaceName).CombinedOutput()
-			if err != nil {
-				message := fmt.Sprintf("Could still not bring up interface %s: %s", interfaceName, err)
-				fmt.Println(message)
-			}
-		}
+		interfaceString := generateInterfaceConfig(variables)
+		applyInterfaceConfig(interfaceName, interfaceString)
 	}
 }
 
@@ -151,20 +79,4 @@ func createEncryptedPsk(password, salt []byte) string {
 	defer clear(password)
 	result := pbkdf2.Key(password, salt, 4096, 32, sha1.New)
 	return hex.EncodeToString(result)
-}
-
-func interfaceExistsAndIsDown(interfaceName string) bool {
-	output, err := exec.Command("ip", "link").Output()
-	if err != nil {
-		fmt.Println("Could not run 'ip link'", err)
-	}
-	lines := strings.Split(string(output), "\n")
-	for _, line := range lines {
-		interfaceExists, _ := regexp.MatchString(interfaceName, line)
-		interfaceIsDown, _ := regexp.MatchString("state DOWN", line)
-		if interfaceExists && interfaceIsDown {
-			return true
-		}
-	}
-	return false
 }
