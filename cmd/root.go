@@ -61,6 +61,7 @@ func setAllCommands() {
 	if err := config.ReadInConfig(); err == nil {
 		setHostname()
 		setWifi()
+		setEthernet()
 		dockerPreloadImages()
 		manageClusterLab()
 		runCommands()

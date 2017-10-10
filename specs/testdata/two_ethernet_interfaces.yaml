@@ -1,0 +1,14 @@
+ethernet:
+  interfaces:
+    eth0:
+      address: 192.168.1.2
+      netmask: 255.255.255.0
+      network: 192.168.1.0
+      gateway: 192.168.1.1
+      broadcast: 192.168.1.255
+    eth1:
+      address: 10.1.1.2
+      netmask: 255.255.0.0
+      network: 10.1.0.0
+      gateway: 10.1.0.1
+      broadcast: 10.1.255.255

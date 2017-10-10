@@ -189,6 +189,116 @@ ff02::2 ip6-allrouters
     end
   end
 
+  context "ethernet" do
+    context "with command ethernet" do
+      before(:each) do
+        expect(command('rm -Rf /etc/network/interfaces.d').exit_status).to be(0)
+      end
+
+      it "sets config" do
+        network_interface_dir = file('/etc/network/interfaces.d/')
+        expect(network_interface_dir.exists?).to be(false)
+
+        device_init_cmd_result = command('device-init ethernet set -i eth0 -a 192.168.1.2 -m 255.255.255.0 -n 192.168.1.0 -g 192.168.1.1 -b 192.168.1.255')
+        expect(device_init_cmd_result.exit_status).to be(0)
+
+        network_interface_dir = file('/etc/network/interfaces.d/')
+        expect(network_interface_dir.exists?).to be(true)
+        expect(network_interface_dir.directory?).to be(true)
+
+        ethernet_config_file = file('/etc/network/interfaces.d/eth0')
+        expect(ethernet_config_file.exists?).to be(true)
+        expect(ethernet_config_file).to contain('allow-hotplug eth0')
+        expect(ethernet_config_file).to contain('auto eth0')
+        expect(ethernet_config_file).to contain('iface eth0 inet static')
+        expect(ethernet_config_file).to contain('address 192.168.1.2')
+        expect(ethernet_config_file).to contain('netmask 255.255.255.0')
+        expect(ethernet_config_file).to contain('network 192.168.1.0')
+        expect(ethernet_config_file).to contain('gateway 192.168.1.1')
+        expect(ethernet_config_file).to contain('broadcast 192.168.1.255')
+      end
+     end
+
+    context "with config-file" do
+      let(:config_one_ethernet_interface)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'one_ethernet_interface.yaml')) }
+      let(:config_two_ethernet_interfaces)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'two_ethernet_interfaces.yaml')) }
+      let(:config_no_ethernet)             { File.read(File.join(File.dirname(__FILE__), 'testdata', 'no_ethernet_interface.yaml')) }
+
+      context "sets config" do
+        before(:each) do
+          expect(command('rm -Rf /etc/network/interfaces.d').exit_status).to be(0)
+        end
+
+        it "creates configuration for one interface entry" do
+          status = command(%Q(echo -n '#{config_one_ethernet_interface}' > /boot/device-init.yaml)).exit_status
+          expect(status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+
+          device_init_cmd_result = command('device-init --config')
+          expect(device_init_cmd_result.exit_status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(true)
+          expect(network_interface_dir.directory?).to be(true)
+
+          ethernet_config_file = file('/etc/network/interfaces.d/eth0')
+          expect(ethernet_config_file.exists?).to be(true)
+          expect(ethernet_config_file).to contain('allow-hotplug eth0')
+          expect(ethernet_config_file).to contain('auto eth0')
+          expect(ethernet_config_file).to contain('iface eth0 inet static')
+          expect(ethernet_config_file).to contain('address 192.168.1.2')
+          expect(ethernet_config_file).to contain('netmask 255.255.255.0')
+          expect(ethernet_config_file).to contain('network 192.168.1.0')
+          expect(ethernet_config_file).to contain('gateway 192.168.1.1')
+          expect(ethernet_config_file).to contain('broadcast 192.168.1.255')
+        end
+
+        it "creates configuration for two interface entries" do
+          status = command(%Q(echo -n '#{config_two_ethernet_interfaces}' > /boot/device-init.yaml)).exit_status
+          expect(status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+
+          device_init_cmd_result = command('device-init --config')
+          expect(device_init_cmd_result.exit_status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(true)
+          expect(network_interface_dir.directory?).to be(true)
+
+          ethernet_config_file = file('/etc/network/interfaces.d/eth1')
+          expect(ethernet_config_file.exists?).to be(true)
+          expect(ethernet_config_file).to contain('allow-hotplug eth1')
+          expect(ethernet_config_file).to contain('auto eth1')
+          expect(ethernet_config_file).to contain('iface eth1 inet static')
+          expect(ethernet_config_file).to contain('address 10.1.1.2')
+          expect(ethernet_config_file).to contain('netmask 255.255.0.0')
+          expect(ethernet_config_file).to contain('network 10.1.0.0')
+          expect(ethernet_config_file).to contain('gateway 10.1.0.1')
+          expect(ethernet_config_file).to contain('broadcast 10.1.255.255')
+        end
+
+        it "creates no configuration if there is no 'ethernet' key in device-init.yaml" do
+          status = command(%Q(echo -n '#{config_no_ethernet}' > /boot/device-init.yaml)).exit_status
+          expect(status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+
+          device_init_cmd_result = command('device-init --config')
+          expect(device_init_cmd_result.exit_status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+        end
+      end
+
+    end
+  end
+
   context "docker" do
     context "preload-images" do
       let(:preload_docker_images_tar_gz)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'preload_docker_images_tar_gz.yaml')) }

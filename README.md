@@ -35,6 +35,19 @@ wifi:
       password: "secret_password"
 ```
 
+### Ethernet Settings
+
+```yaml
+ethernet:
+  interfaces:
+    eth0:
+      address: 192.168.1.2
+      network: 192.168.1.0
+      gateway: 192.168.1.1
+      netmask: 255.255.255.255
+      broadcast: 192.168.1.255
+```
+
 ### Docker Preload Images Settings
 device-init can preload local image files into the Docker engine on boot.
 Those images have to be exported via 'docker save image-name > image-name.tar'.
