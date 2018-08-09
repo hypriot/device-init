@@ -61,6 +61,7 @@ func setAllCommands() {
 	if err := config.ReadInConfig(); err == nil {
 		setHostname()
 		setWifi()
+		setNetwork()
 		dockerPreloadImages()
 		manageClusterLab()
 		runCommands()
@@ -83,5 +84,4 @@ func initConfig() {
 			fmt.Println("Using config file:", config.ConfigFileUsed())
 		}
 	}
-
 }

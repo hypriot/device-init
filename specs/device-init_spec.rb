@@ -188,6 +188,115 @@ ff02::2 ip6-allrouters
 
     end
   end
+  
+  context "network" do
+    
+	context "with config-file" do
+      let(:config_static_interface)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'static_interface.yaml')) }
+      let(:config_mixed_interfaces)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'mixed_interface.yaml')) }
+      let(:config_no_network)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'no_wifi_interface.yaml')) }
+
+      context "sets config" do
+        before(:each) do
+          expect(command('rm -Rf /etc/network/interfaces.d').exit_status).to be(0)
+        end
+
+		it "creates configuration for one static interface entry" do
+          status = command(%Q(echo -n '#{config_static_interface}' > /boot/device-init.yaml)).exit_status
+          expect(status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+
+          device_init_cmd_result = command('device-init --config')
+          expect(device_init_cmd_result.exit_status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(true)
+          expect(network_interface_dir.directory?).to be(true)
+
+          interface_config_file = file('/etc/network/interfaces.d/eth0')
+          expect(interface_config_file.exists?).to be(true)
+          expect(interface_config_file).to contain('allow-hotplug eth0')
+          expect(interface_config_file).to contain('auto eth0')
+          expect(interface_config_file).to contain('iface eth0 inet static')
+          expect(interface_config_file).to contain('address 192.168.1.42')
+          expect(interface_config_file).to contain('gateway 192.168.1.0')
+          expect(interface_config_file).to contain('netmask 255.255.255.0')
+          expect(interface_config_file).to contain('dns-nameservers 8.8.8.8 8.8.4.4')
+          expect(interface_config_file).to contain('dns-search example.com')
+        end
+		
+		it "creates configuration for multiple mixed (static/dhcp) interface entries" do
+          status = command(%Q(echo -n '#{config_mixed_interfaces}' > /boot/device-init.yaml)).exit_status
+          expect(status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+
+          device_init_cmd_result = command('device-init --config')
+          expect(device_init_cmd_result.exit_status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(true)
+          expect(network_interface_dir.directory?).to be(true)
+
+          interface_config_file = file('/etc/network/interfaces.d/eth0')
+          expect(interface_config_file.exists?).to be(true)
+          expect(interface_config_file).to contain('allow-hotplug eth0')
+          expect(interface_config_file).to contain('auto eth0')
+          expect(interface_config_file).to contain('iface eth0 inet static')
+          expect(interface_config_file).to contain('address 192.168.1.42')
+          expect(interface_config_file).to contain('gateway 192.168.1.0')
+          expect(interface_config_file).to contain('netmask 255.255.255.0')
+          expect(interface_config_file).to contain('dns-nameservers 8.8.8.8 8.8.4.4')
+          expect(interface_config_file).to contain('dns-search example.com')
+
+		  interface_config_file = file('/etc/network/interfaces.d/eth1')
+          expect(interface_config_file.exists?).to be(true)
+          expect(interface_config_file).to contain('allow-hotplug eth1')
+          expect(interface_config_file).to contain('auto eth1')
+          expect(interface_config_file).to contain('iface eth1 inet dhcp')
+
+		  interface_config_file = file('/etc/network/interfaces.d/wlan0')
+          expect(interface_config_file.exists?).to be(true)
+          expect(interface_config_file).to contain('allow-hotplug wlan0')
+          expect(interface_config_file).to contain('auto wlan0')
+          expect(interface_config_file).to contain('iface wlan0 inet static')
+          expect(interface_config_file).to contain('address 192.168.1.123')
+          expect(interface_config_file).to contain('gateway 192.168.1.0')
+          expect(interface_config_file).to contain('netmask 255.255.255.0')
+          expect(interface_config_file).to contain('dns-nameservers 8.8.8.8 8.8.4.4')
+          expect(interface_config_file).to contain('dns-search example.com')
+		  expect(interface_config_file).to contain('wpa-ssid MyNetwork')
+          expect(interface_config_file).to contain('wpa-psk a53576661368249ebfa26f8828669ad0e6f0523154b55404b33a21ca1242b845')
+
+		  interface_config_file = file('/etc/network/interfaces.d/wlan1')
+          expect(interface_config_file.exists?).to be(true)
+          expect(interface_config_file).to contain('allow-hotplug wlan1')
+          expect(interface_config_file).to contain('auto wlan1')
+          expect(interface_config_file).to contain('iface wlan1 inet dhcp')
+		  expect(interface_config_file).to contain('wpa-ssid MySecondNetwork')
+          expect(interface_config_file).to contain('wpa-psk 32919a0369631b758391d00e2aaaf66e6ab61b61949cc853c45410fbf4910442')
+        end
+		
+        it "creates no configuration if there is no 'network' key in device-init.yaml" do
+          status = command(%Q(echo -n '#{config_no_network}' > /boot/device-init.yaml)).exit_status
+          expect(status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+
+          device_init_cmd_result = command('device-init --config')
+          expect(device_init_cmd_result.exit_status).to be(0)
+
+          network_interface_dir = file('/etc/network/interfaces.d/')
+          expect(network_interface_dir.exists?).to be(false)
+        end
+      end
+
+    end
+  end
 
   context "docker" do
     context "preload-images" do

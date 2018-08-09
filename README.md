@@ -9,7 +9,8 @@ To replace the `/boot/occidentalis.txt` (as we want this feature for more boards
 * ☑ Set WiFi SSID/PSK
 * ☐ Set timezone
 * ☐ Set locale
-* ☐ Set static IP (see hypriot/device-init#6)
+* ☑ Set static IP
+* ☑ Configure network interfaces
 * ☑ Pull some docker images
 * ☐ Install a list of DEB packages
 * ☑ Run a custom script from /boot
@@ -25,7 +26,31 @@ The `device-init` tool reads the file `/boot/device-init.yaml` to initialize sev
 hostname: "black-pearl"
 ```
 
+### Network Settings
+
+```yaml
+network:
+  interfaces:
+    eth0:
+      # sets a static IP
+      address: 192.168.13.37
+      netmask: 255.255.255.0
+      gateway: 192.168.13.1
+      dnsnameservers:
+        - 8.8.8.8
+        - 8.8.4.4
+      dnssearch:
+        example.com
+    eth1:
+      # uses dhcp
+    wlan0:
+      ssid: "MyNetwork"
+      password: "secret_password"
+```
+
 ### Wifi Settings
+
+This option only allows creating wlan intefaces and setting SSID/PSK. For advanced configuration see [network configuration](#network-settings).
 
 ```yaml
 wifi:

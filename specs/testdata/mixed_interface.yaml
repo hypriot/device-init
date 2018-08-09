@@ -1,0 +1,24 @@
+network:
+  interfaces:
+    eth0:
+      address: 192.168.1.42
+      gateway: 192.168.1.0
+      netmask: 255.255.255.0
+      dnsnameservers:
+        - 8.8.8.8
+        - 8.8.4.4
+      dnssearch: example.com
+    eth1:
+    wlan0:
+      address: 192.168.1.123
+      gateway: 192.168.1.0
+      netmask: 255.255.255.0
+      dnsnameservers:
+        - 8.8.8.8
+        - 8.8.4.4
+      dnssearch: example.com
+      ssid: MyNetwork
+      password: my_secret_password
+    wlan1:
+      ssid: MySecondNetwork
+      password: another_secret_password
