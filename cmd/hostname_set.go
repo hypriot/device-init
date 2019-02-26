@@ -22,11 +22,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os/exec"
 	"regexp"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 // setCmd represents the set command
@@ -71,7 +72,7 @@ func setHostname(args ...string) {
 			panic(err)
 		}
 
-		hostname_line := fmt.Sprintf("127.0.0.1	%s # added by device-init", hostname)
+		hostname_line := fmt.Sprintf("127.0.1.1	%s.local %s # added by device-init", hostname, hostname)
 
 		if !is_present_in_hosts_file(hostname_line) && !is_present_in_hosts_file(hostname) {
 			addHostname(hostname_line)

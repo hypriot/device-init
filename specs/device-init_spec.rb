@@ -37,15 +37,15 @@ describe "device-init" do
 
         expect(device_init_cmd_result_one).to contain("Set")
         expect(device_init_cmd_result_two).to contain("Set")
-        expect(hosts_file_content.scan(/black-widow/).count).to eq(1)
+        expect(hosts_file_content.scan(/black-widow/).count).to eq(2)
       end
 
       it "replaces existing device-init hostname entry if it already exists" do
         device_init_cmd_result = command('device-init hostname set black-mamba').stdout
         hosts_file_content = command('cat /etc/hosts').stdout
-        
+
         expect(device_init_cmd_result).to contain("Set")
-        expect(hosts_file_content.scan(/black-mamba/).count).to eq(1)
+        expect(hosts_file_content.scan(/black-mamba/).count).to eq(2)
         expect(hosts_file_content.scan(/black-widow/).count).to eq(0)
       end
 
@@ -53,7 +53,7 @@ describe "device-init" do
         hostname = 'black-pearl'
         hosts_file = %Q(
 127.0.0.1 localhost
-127.0.0.1 #{hostname}
+127.0.1.1 #{hostname}.local #{hostname}
 ::1 localhost ip6-localhost ip6-loopback
 fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
@@ -68,7 +68,7 @@ ff02::2 ip6-allrouters
 
         expect(device_init_cmd_result).to contain("Set")
         expect(hosts_file_content.scan(/\# added by device-init/).count).to eq(0)
-        expect(hosts_file_content.scan(/#{Regexp.quote(hostname)}/).count).to eq(1)
+        expect(hosts_file_content.scan(/#{Regexp.quote(hostname)}/).count).to eq(2)
       end
     end
 
@@ -272,7 +272,7 @@ ff02::2 ip6-allrouters
     let(:cluster_lab_enabled)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'cluster_lab_enabled.yaml')) }
     let(:cluster_lab_disabled)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'cluster_lab_disabled.yaml')) }
     let(:cluster_lab_command)  { File.read(File.join(File.dirname(__FILE__), 'testdata', 'fake_cluster_lab_command')) }
-    
+
     before(:each) do
       echo_cluster_lab_cmd = command(%Q(echo -n '#{cluster_lab_command}' > /usr/local/bin/cluster-lab))
       expect(echo_cluster_lab_cmd.exit_status).to be(0)
@@ -291,7 +291,7 @@ ff02::2 ip6-allrouters
 
       device_init_cmd = command('device-init --config')
       expect(device_init_cmd.exit_status).to be(0)
-     
+
       cat_cmd = command('cat /tmp/alive.log')
       expect(cat_cmd.exit_status).to be(0)
       expect(cat_cmd.stdout).to contain('Cluster-Lab is alive!')
@@ -339,4 +339,3 @@ ff02::2 ip6-allrouters
               end
   end
 end
-
