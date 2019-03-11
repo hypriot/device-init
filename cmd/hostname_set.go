@@ -27,6 +27,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"os"
 )
 
 // setCmd represents the set command
@@ -49,6 +50,12 @@ func init() {
 
 func setHostname(args ...string) {
 	hostname := ""
+	
+	osHostName, err := os.Hostname()
+	
+	if err != nil {
+        fmt.Println("Unable to get os hostname: ", err)
+    }
 
 	// if we have hostname in config file use that
 	if config.IsSet("hostname") {
@@ -65,49 +72,54 @@ func setHostname(args ...string) {
 		return
 	}
 
-	if hostname != "" {
-		err := ioutil.WriteFile("/etc/hostname", []byte(hostname), 0644)
-		if err != nil {
-			panic(err)
-		}
-
-		hostname_line := fmt.Sprintf("127.0.0.1	%s # added by device-init", hostname)
-
-		if !is_present_in_hosts_file(hostname_line) && !is_present_in_hosts_file(hostname) {
-			addHostname(hostname_line)
-		}
-
-		err = exec.Command("hostname", hostname).Run()
-		if err != nil {
-			fmt.Println("Unable to set hostname: ", err)
-		}
-
-		// ensure that dhcp server and avahi daemon are aware of new hostname
-		for _, interfaceName := range activeInterfaces() {
-			err = exec.Command("/sbin/ifdown", interfaceName).Run()
-			if err != nil {
-				fmt.Println("Unable to bring interface down: ", interfaceName, err)
-			}
-
-			err = exec.Command("/sbin/ifup", interfaceName).Run()
-			if err != nil {
-				fmt.Println("Unable to bring interface up: ", interfaceName, err)
-			}
-		}
-
-		err = exec.Command("/bin/systemctl", "restart", "avahi-daemon.service").Run()
-		if err != nil {
-			fmt.Println("Unable to restart avahi-daemon: ", err)
-		}
-
-		err = exec.Command("/bin/systemctl", "restart", "rsyslog.service").Run()
-		if err != nil {
-			fmt.Println("Unable to restart rsyslog: ", err)
-		}
-
-		fmt.Printf("Set hostname: %s\n", hostname)
-	}
+    if hostname != osHostName {
+        if hostname != "" {
+    		err := ioutil.WriteFile("/etc/hostname", []byte(hostname), 0644)
+    		if err != nil {
+    		    fmt.Println("Error: 71 line ")
+    			panic(err)
+    		}
+    
+    		hostname_line := fmt.Sprintf("127.0.0.1	%s # added by device-init", hostname)
+    
+    		if !is_present_in_hosts_file(hostname_line) && !is_present_in_hosts_file(hostname) {
+    			addHostname(hostname_line)
+    		}
+    
+    		err = exec.Command("hostname", hostname).Run()
+    		if err != nil {
+    			fmt.Println("Unable to set hostname: ", err)
+    		}
+    
+    		// ensure that dhcp server and avahi daemon are aware of new hostname
+    		for _, interfaceName := range activeInterfaces() {
+    			err = exec.Command("/sbin/ifdown", interfaceName).Run()
+    			if err != nil {
+    				fmt.Println("Unable to bring interface down: ", interfaceName, err)
+    			}
+    
+    			err = exec.Command("/sbin/ifup", interfaceName).Run()
+    			if err != nil {
+    				fmt.Println("Unable to bring interface up: ", interfaceName, err)
+    			}
+    		}
+    
+    		err = exec.Command("/bin/systemctl", "restart", "avahi-daemon.service").Run()
+    		if err != nil {
+    			fmt.Println("Unable to restart avahi-daemon: ", err)
+    		}
+    
+    		err = exec.Command("/bin/systemctl", "restart", "rsyslog.service").Run()
+    		if err != nil {
+    			fmt.Println("Unable to restart rsyslog: ", err)
+    		}
+    
+    		fmt.Printf("Set hostname: %s\n", hostname)
+    	}
+    }
+	
 }
+
 
 func activeInterfaces() []string {
 	var result []string
@@ -119,7 +131,7 @@ func activeInterfaces() []string {
 	for _, line := range lines {
 		interfaceIsUp, _ := regexp.MatchString("state UP", line)
 		if interfaceIsUp {
-			re := regexp.MustCompile(`^\d*:\s([a-z0-9@]*):`)
+			re := regexp.MustCompile(`^\d*:\s([a-zA-Z0-9@_\-]*):`)
 			result = append(result, re.FindStringSubmatch(line)[1])
 		}
 	}
